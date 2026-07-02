@@ -1,7 +1,5 @@
-import os
 import ast
 import pickle
-import gdown
 import pandas as pd
 import streamlit as st
 
@@ -16,9 +14,7 @@ from wishlist import wishlist_page
 from movie_card import display_movie
 from recent import recent_page
 
-# ---------------------------------------------------
-# PAGE CONFIG
-# ---------------------------------------------------
+
 
 st.set_page_config(
     page_title="MoodFlix",
@@ -27,9 +23,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ---------------------------------------------------
-# LOAD CSS
-# ---------------------------------------------------
+
 
 def load_css():
 
@@ -42,25 +36,6 @@ def load_css():
 
 load_css()
 
-# ---------------------------------------------------
-# DOWNLOAD SIMILARITY IF NOT PRESENT
-# ---------------------------------------------------
-
-FILE_ID = "1qpAcZ56oo14B1qbeuDJN893N4wKVlnuL"
-
-if not os.path.exists("similarity.pkl"):
-
-    with st.spinner("Downloading Recommendation Engine..."):
-
-        gdown.download(
-            f"https://drive.google.com/uc?id={FILE_ID}",
-            "similarity.pkl",
-            quiet=False
-        )
-
-# ---------------------------------------------------
-# CACHE DATA
-# ---------------------------------------------------
 
 @st.cache_resource
 def load_movies():
@@ -129,9 +104,7 @@ def load_movies():
 
 movies, similarity = load_movies()
 
-# ---------------------------------------------------
-# CACHE RECOMMENDATION
-# ---------------------------------------------------
+
 
 @st.cache_data(show_spinner=False)
 def get_recommendations(movie,mood,companion,language):
@@ -144,9 +117,7 @@ def get_recommendations(movie,mood,companion,language):
         top_n=5
     )
 
-# ---------------------------------------------------
-# SIDEBAR
-# ---------------------------------------------------
+
 
 page = sidebar()
 
@@ -154,9 +125,6 @@ page = sidebar()
 if "recommendations" not in st.session_state:
     st.session_state.recommendations = []
 
-# ---------------------------------------------------
-# HEADER
-# ---------------------------------------------------
 
 st.markdown("""
 
@@ -325,7 +293,6 @@ if recommend_btn:
             f"🍿 Found {len(st.session_state.recommendations)} recommendations for you!"
         )
 
-# ⭐⭐⭐ YE LINE BAHAR HOGI ⭐⭐⭐
 recommendations = st.session_state.recommendations
 
 st.markdown("<br>", unsafe_allow_html=True)

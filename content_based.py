@@ -1,18 +1,16 @@
 import pickle
 import pandas as pd
 import ast
+import os
+import gdown
 
 from data_load import get_movie
 
-# -----------------------------
-# Load Movie Dictionary
-# -----------------------------
+
 movies_dict = pickle.load(open("movie_dict.pkl", "rb"))
 movies = pd.DataFrame(movies_dict)
 
-# -----------------------------
-# Load TMDB Dataset
-# -----------------------------
+
 tmdb = pd.read_csv("tmdb_5000_movies.csv")
 
 
@@ -32,10 +30,19 @@ movies = movies.merge(
     how="left"
 )
 
-# -----------------------------
-# Load Similarity Matrix
-# -----------------------------
+FILE_ID = "1qpAcZ56oo14B1qbeuDJN893N4wKVlnuL"
+
+if not os.path.exists("similarity.pkl"):
+    print("Downloading similarity.pkl...")
+
+    gdown.download(
+        f"https://drive.google.com/uc?id={FILE_ID}",
+        "similarity.pkl",
+        quiet=False
+    )
+
 similarity = pickle.load(open("similarity.pkl", "rb"))
+
 
 
 def recommend(movie, top_n=50):
