@@ -1,5 +1,4 @@
 import streamlit as st
-import webbrowser
 import urllib.parse
 
 def format_runtime(runtime):
@@ -132,28 +131,22 @@ def display_movie(movie):
 
     with b1:
 
-        if movie.get("trailer"):
+        trailer_url = movie.get("trailer")
 
-            st.link_button(
-            "▶ Trailer",
-            movie["trailer"],
-            use_container_width=True
-        )
+    if not trailer_url:
 
-        else:
+        movie_name = urllib.parse.quote(movie["title"])
 
-            movie_name = urllib.parse.quote(movie["title"])
-
-        url = (
+        trailer_url = (
             f"https://www.youtube.com/results?search_query="
             f"{movie_name}+official+trailer"
         )
 
-        st.link_button(
-            "▶ Trailer",
-            url,
-            use_container_width=True
-        )
+    st.link_button(
+        "▶ Trailer",
+        trailer_url,
+        use_container_width=True
+    )
 
     with b2:
 
