@@ -23,6 +23,36 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+st.markdown("""
+<style>
+
+header {
+    visibility: hidden;
+}
+
+[data-testid="stToolbar"] {
+    display: none;
+}
+
+[data-testid="stDecoration"] {
+    display: none;
+}
+
+[data-testid="stStatusWidget"] {
+    display: none;
+}
+
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 
 
 def load_css():
@@ -269,7 +299,6 @@ with col4:
 with col5:
 
     st.write("")
-st.write("")
 
 recommend_btn = st.button(
     "🎬 Get Recommendations",

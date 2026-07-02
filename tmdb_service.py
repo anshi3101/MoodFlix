@@ -38,9 +38,6 @@ session.headers.update({
     "User-Agent": "MoodFlix/1.0"
 })
 
-# -----------------------------
-# Fetch Movie Details
-# -----------------------------
 
 @lru_cache(maxsize=5000)
 def fetch_movie_details(movie_id):

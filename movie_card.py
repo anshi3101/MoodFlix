@@ -132,26 +132,28 @@ def display_movie(movie):
 
     with b1:
 
-        if st.button(
+        if movie.get("trailer"):
+
+            st.link_button(
             "▶ Trailer",
-            key=f"trailer_{movie['movie_id']}",
-            width="stretch"
-        ):
+            movie["trailer"],
+            use_container_width=True
+        )
 
-            if movie.get("trailer"):
+        else:
 
-                webbrowser.open_new_tab(movie["trailer"])
+            movie_name = urllib.parse.quote(movie["title"])
 
-            else:
+        url = (
+            f"https://www.youtube.com/results?search_query="
+            f"{movie_name}+official+trailer"
+        )
 
-                movie_name = urllib.parse.quote(movie["title"])
-
-                url = (
-                    f"https://www.youtube.com/results?search_query="
-                    f"{movie_name}+official+trailer"
-                )
-
-                webbrowser.open_new_tab(url)
+        st.link_button(
+            "▶ Trailer",
+            url,
+            use_container_width=True
+        )
 
     with b2:
 
