@@ -1,14 +1,18 @@
 import pickle
 import pandas as pd
-import requests
-import time
 import ast
-from tmdb_service import fetch_movie_details
 
-# Load Data
+from data_load import get_movie
+
+# -----------------------------
+# Load Movie Dictionary
+# -----------------------------
 movies_dict = pickle.load(open("movie_dict.pkl", "rb"))
 movies = pd.DataFrame(movies_dict)
 
+# -----------------------------
+# Load TMDB Dataset
+# -----------------------------
 tmdb = pd.read_csv("tmdb_5000_movies.csv")
 
 
@@ -28,10 +32,11 @@ movies = movies.merge(
     how="left"
 )
 
+# -----------------------------
+# Load Similarity Matrix
+# -----------------------------
 similarity = pickle.load(open("similarity.pkl", "rb"))
 
-API_KEY = "32f8ac1a21f52f177d724040cdf7a57d"
-session = requests.Session()
 
 def recommend(movie, top_n=50):
 
@@ -39,19 +44,20 @@ def recommend(movie, top_n=50):
 
     distances = sorted(
         enumerate(similarity[movie_index]),
-        reverse=True,
-        key=lambda x: x[1]
+        key=lambda x: x[1],
+        reverse=True
     )
 
     recommendations = []
 
-    for i in distances[1:1000]:
+    for idx, score in distances[1:]:
 
-        idx = i[0]
+        movie_id = int(movies.iloc[idx].movie_id)
 
-        movie_id = movies.iloc[idx].movie_id
+        details = get_movie(movie_id)
 
-        details = fetch_movie_details(movie_id)
+        if details is None:
+            continue
 
         recommendations.append({
 
@@ -59,30 +65,33 @@ def recommend(movie, top_n=50):
 
             "title": movies.iloc[idx].title,
 
-            "poster": details["poster"] if details else None,
+            "poster": details["poster"],
 
-            "overview": details["overview"] if details else "",
+            "overview": details["overview"],
 
-            "release_date": details["release_date"] if details else "",
+            "release_date": details["release_date"],
 
-            "rating": details["rating"] if details else 0,
+            "rating": details["rating"],
 
-            "votes": details["votes"] if details else 0,
+            "votes": details["votes"],
 
-            "popularity": details["popularity"] if details else 0,
+            "popularity": details["popularity"],
 
-            "cast": details["cast"] if details else [],
+            "cast": details["cast"],
 
-            "trailer": details["trailer"] if details else None,
+            "trailer": details["trailer"],
 
-            "similarity": float(i[1]),
+            "similarity": float(score),
 
-            "genres": details["genres"] if details else movies.iloc[idx].genres,
+            "genres": details["genres"],
 
             "language": movies.iloc[idx].original_language,
 
-            "runtime": details["runtime"] if details else movies.iloc[idx].runtime
+            "runtime": details["runtime"]
 
         })
 
-    return recommendations[:top_n]
+        if len(recommendations) >= top_n:
+            break
+
+    return recommendations

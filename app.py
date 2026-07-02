@@ -1,4 +1,5 @@
 import os
+import ast
 import pickle
 import gdown
 import pandas as pd
@@ -15,12 +16,20 @@ from wishlist import wishlist_page
 from movie_card import display_movie
 from recent import recent_page
 
+# ---------------------------------------------------
+# PAGE CONFIG
+# ---------------------------------------------------
+
 st.set_page_config(
     page_title="MoodFlix",
     page_icon="🎬",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# ---------------------------------------------------
+# LOAD CSS
+# ---------------------------------------------------
 
 def load_css():
 
@@ -33,76 +42,137 @@ def load_css():
 
 load_css()
 
-page = sidebar()
-
-
-st.markdown("""
-    <h1 style='margin-bottom:5px;font-size:48px;font-weight:700;'>
-    🎬 Mood<span style="color:#A855F7;">Flix</span>
-    </h1>
-
-    <p style="color:#9CA3AF;font-size:15px;margin-top:-8px;">
-    AI Powered Movie Recommendation System
-    </p>
-    """, unsafe_allow_html=True)
+# ---------------------------------------------------
+# DOWNLOAD SIMILARITY IF NOT PRESENT
+# ---------------------------------------------------
 
 FILE_ID = "1qpAcZ56oo14B1qbeuDJN893N4wKVlnuL"
 
 if not os.path.exists("similarity.pkl"):
-    gdown.download(
-        f"https://drive.google.com/uc?id={FILE_ID}",
-        "similarity.pkl",
-        quiet=False
+
+    with st.spinner("Downloading Recommendation Engine..."):
+
+        gdown.download(
+            f"https://drive.google.com/uc?id={FILE_ID}",
+            "similarity.pkl",
+            quiet=False
+        )
+
+# ---------------------------------------------------
+# CACHE DATA
+# ---------------------------------------------------
+
+@st.cache_resource
+def load_movies():
+
+    movies_dict = pickle.load(
+        open("movie_dict.pkl", "rb")
     )
-    
-movies_dict = pickle.load(open('movie_dict.pkl','rb'))
 
-movies = pd.DataFrame(movies_dict)
+    movies = pd.DataFrame(movies_dict)
 
-import ast
+    tmdb = pd.read_csv(
+        "tmdb_5000_movies.csv"
+    )
 
-tmdb = pd.read_csv("tmdb_5000_movies.csv")
+    def extract(x):
+
+        try:
+
+            return [
+
+                i["name"]
+
+                for i in ast.literal_eval(x)
+
+            ]
+
+        except:
+
+            return []
+
+    tmdb["genres"] = tmdb["genres"].apply(extract)
+
+    movies = movies.merge(
+
+        tmdb[
+            [
+
+                "title",
+
+                "genres",
+
+                "runtime",
+
+                "vote_average",
+
+                "original_language"
+
+            ]
+
+        ],
+
+        on="title",
+
+        how="left"
+
+    )
+
+    similarity = pickle.load(
+
+        open("similarity.pkl", "rb")
+
+    )
+
+    return movies, similarity
 
 
-def extract(x):
+movies, similarity = load_movies()
 
-    try:
-        return [
-            i["name"]
-            for i in ast.literal_eval(x)
-        ]
+# ---------------------------------------------------
+# CACHE RECOMMENDATION
+# ---------------------------------------------------
 
-    except:
-        return []
+@st.cache_data(show_spinner=False)
+def get_recommendations(movie,mood,companion,language):
 
+    return pipeline_recommend(
+        movie,
+        mood,
+        companion,
+        language,
+        top_n=5
+    )
 
-tmdb["genres"] = tmdb["genres"].apply(extract)
+# ---------------------------------------------------
+# SIDEBAR
+# ---------------------------------------------------
 
-movies = movies.merge(
+page = sidebar()
 
-    tmdb[
+# Store recommendations between reruns
+if "recommendations" not in st.session_state:
+    st.session_state.recommendations = []
 
-        [
+# ---------------------------------------------------
+# HEADER
+# ---------------------------------------------------
 
-            "title",
+st.markdown("""
 
-            "genres",
+<h1 style='margin-bottom:5px;font-size:48px;font-weight:700;'>
 
-            "runtime",
+🎬 Mood<span style="color:#A855F7;">Flix</span>
 
-            "vote_average",
+</h1>
 
-            "original_language"
+<p style="color:#9CA3AF;font-size:15px;margin-top:-8px;">
 
-        ]
+AI Powered Movie Recommendation System
 
-    ],
+</p>
 
-    on="title",
-
-    how="left"
-
-)
+""", unsafe_allow_html=True)
 
 if page == "🕒 Recently Viewed":
 
@@ -242,48 +312,47 @@ recommend_btn = st.button(
 
 if recommend_btn:
 
-    with st.spinner(
-        "🎬 Finding Perfect Movies For You..."
-    ):
+    with st.spinner("🎬 Finding Perfect Movies For You..."):
 
-        recommendations = pipeline_recommend(
-            movie=selected_movie_name,
-            mood=selected_mood,
-            companion=selected_companion,
-            preferred_language=selected_language,
-            top_n=5
+        st.session_state.recommendations = get_recommendations(
+            selected_movie_name,
+            selected_mood,
+            selected_companion,
+            selected_language
         )
 
         st.success(
-            f"🍿 Found {len(recommendations)} recommendations for you!"
-        )
-    #st.write(recommendations)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="section-title">
-    💜 Recommended For You
-    </div>
-    """, unsafe_allow_html=True)
-
-    if len(recommendations) == 0:
-
-        st.warning(
-            "😔 No movies found. Try another mood or language."
+            f"🍿 Found {len(st.session_state.recommendations)} recommendations for you!"
         )
 
-    else:
+# ⭐⭐⭐ YE LINE BAHAR HOGI ⭐⭐⭐
+recommendations = st.session_state.recommendations
 
-        cols = st.columns(len(recommendations))
+st.markdown("<br>", unsafe_allow_html=True)
 
-        for i, movie in enumerate(recommendations):
+st.markdown("""
+<div class="section-title">
+💜 Recommended For You
+</div>
+""", unsafe_allow_html=True)
 
-            with cols[i]:
+if len(recommendations) == 0:
 
-                with st.container(border=True):
+    st.warning(
+        "😔 No movies found."
+    )
 
-                    display_movie(movie)
+else:
+
+    cols = st.columns(len(recommendations))
+
+    for i, movie in enumerate(recommendations):
+
+        with cols[i]:
+
+            with st.container(border=True):
+
+                display_movie(movie)
 
 st.markdown("---")
 
