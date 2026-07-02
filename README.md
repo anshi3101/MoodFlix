@@ -229,7 +229,7 @@ The system combines similarity, mood score, companion score, and language score 
 ### Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/MoodFlix.git
+git clone https://github.com/anshi3101/MoodFlix
 ```
 
 ### Move into Project
