@@ -7,19 +7,17 @@ def wishlist_page():
     st.title("❤️ My Wishlist")
 
     if "wishlist" not in st.session_state:
-
         st.session_state.wishlist = []
 
     wishlist = st.session_state.wishlist
 
     if len(wishlist) == 0:
 
-        st.info("No movies added to wishlist yet 🍿")
+        st.info("🍿 Your wishlist is empty.")
 
         return
 
     movies = pd.read_pickle("movie_dict.pkl")
-
     movies = pd.DataFrame(movies)
 
     for movie in wishlist:
@@ -31,31 +29,45 @@ def wishlist_page():
 
         movie_id = row.iloc[0]["movie_id"]
 
-        col1, col2 = st.columns([5,1])
+        # Card
+        with st.container(border=True):
 
-        with col1:
+            col1, col2 = st.columns([10, 1], gap="small")
 
-            st.success(f"🎬 {movie}")
+            with col1:
 
-        with col2:
+                st.markdown(f"### 🎬 {movie}")
 
-            if st.button(
-                "❌",
-                key=f"remove_{movie_id}"
-            ):
+            with col2:
 
-                st.session_state.wishlist.remove(movie)
+                if st.button(
+                    "🗑️",
+                    key=f"remove_{movie_id}",
+                    use_container_width=True
+                ):
 
-                st.rerun()
+                    st.session_state.wishlist.remove(movie)
 
-    st.markdown("---")
+                    st.toast(
+                        "Removed from Wishlist ❤️",
+                        icon="🗑️"
+                    )
+
+                    st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button(
         "🗑 Clear Wishlist",
         type="primary",
-        width="stretch"
+        use_container_width=True
     ):
 
         st.session_state.wishlist = []
+
+        st.toast(
+            "Wishlist Cleared",
+            icon="🗑️"
+        )
 
         st.rerun()

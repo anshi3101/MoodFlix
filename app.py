@@ -20,34 +20,41 @@ st.set_page_config(
     page_title="MoodFlix",
     page_icon="🎬",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 st.markdown("""
 <style>
 
-header {
-    visibility: hidden;
+.block-container{
+    padding-top:0.2rem !important;
+    padding-bottom:1rem !important;
 }
 
-[data-testid="stToolbar"] {
-    display: none;
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+
+header{
+    background:transparent !important;
 }
 
-[data-testid="stDecoration"] {
-    display: none;
+#MainMenu{
+    visibility:hidden;
 }
 
-[data-testid="stStatusWidget"] {
-    display: none;
+footer{
+    visibility:hidden;
 }
 
-#MainMenu {
-    visibility: hidden;
+[data-testid="stDecoration"]{
+    display:none;
 }
 
-footer {
-    visibility: hidden;
+[data-testid="stStatusWidget"]{
+    display:none;
 }
 
 </style>
@@ -158,17 +165,38 @@ if "recommendations" not in st.session_state:
 
 st.markdown("""
 
-<h1 style='margin-bottom:5px;font-size:48px;font-weight:700;'>
+<div class="hero-header">
 
-🎬 Mood<span style="color:#A855F7;">Flix</span>
+<div>
+
+<h1 id="moodflix-title">
+
+🎬 Mood<span>Flix</span>
 
 </h1>
 
-<p style="color:#9CA3AF;font-size:15px;margin-top:-8px;">
+<div class="hero-tagline">
 
-AI Powered Movie Recommendation System
+✨ Personalized • AI Powered • Mood Based Recommendations
 
-</p>
+</div>
+
+<div class="hero-desc">
+
+Find your next favourite movie using AI,
+your mood, your companion and preferred language.
+
+</div>
+
+</div>
+
+<div class="hero-badge">
+
+🍿 Version 2.0
+
+</div>
+
+</div>
 
 """, unsafe_allow_html=True)
 
@@ -212,8 +240,6 @@ Recommendation is based on:
     
 similarity = pickle.load(open('similarity.pkl','rb'))
 
-st.markdown("<br>",unsafe_allow_html=True)
-
 st.markdown("""
 <div class="glass fade">
 
@@ -255,8 +281,6 @@ border-radius:18px;
 </div>
 
 """,unsafe_allow_html=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
 
 st.markdown("""
 <div class='glass'>

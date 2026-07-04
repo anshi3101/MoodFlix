@@ -127,11 +127,7 @@ def display_movie(movie):
 
     st.markdown("---")
 
-    b1, b2 = st.columns(2)
-
-    with b1:
-
-        trailer_url = movie.get("trailer")
+    trailer_url = movie.get("trailer")
 
     if not trailer_url:
 
@@ -142,18 +138,22 @@ def display_movie(movie):
             f"{movie_name}+official+trailer"
         )
 
-    st.link_button(
-        "▶ Trailer",
-        trailer_url,
-        use_container_width=True
-    )
+    b1, b2 = st.columns(2, gap="small")
+
+    with b1:
+
+        st.link_button(
+            "▶ Trailer",
+            trailer_url,
+            use_container_width=True
+        )
 
     with b2:
 
         if st.button(
             "❤️ Wishlist",
             key=f"wish_{movie['movie_id']}",
-            width="stretch"
+            use_container_width=True
         ):
 
             if "wishlist" not in st.session_state:
@@ -161,18 +161,24 @@ def display_movie(movie):
 
             if movie["title"] in st.session_state.wishlist:
 
-                st.warning("Already Added ❤️")
+                st.toast(
+                    "Already in Wishlist ❤️",
+                    icon="❤️"
+                )
 
             else:
 
                 st.session_state.wishlist.append(movie["title"])
 
-                st.success("Added Successfully ❤️")
+                st.toast(
+                    "Added to Wishlist ❤️",
+                    icon="🎉"
+                )
 
     if st.button(
         "ℹ Details",
         key=f"details_{movie['movie_id']}",
-        width="stretch"
+        use_container_width=True
     ):
 
         st.session_state[

@@ -114,7 +114,28 @@ max-width:100%;
 
 [data-testid="stSidebarContent"]{
 
-    padding:20px 15px;
+    padding:4px 12px 12px 12px !important;
+
+    margin-top:-18px !important;
+
+}
+
+/* Sidebar spacing */
+[data-testid="stSidebarContent"] > div{
+
+    gap:10px !important;
+
+}
+
+[data-testid="stSidebar"] hr{
+
+    margin:12px 0 !important;
+
+}
+
+[data-testid="stSidebar"] h3{
+
+    margin:8px 0 !important;
 
 }
 
@@ -993,3 +1014,294 @@ font-size:22px !important;
 }
 
 }   
+
+/* Sidebar Toggle Position */
+
+button[kind="header"]{
+
+    margin-left:8px !important;
+
+    margin-top:8px !important;
+
+}
+
+[data-testid="collapsedControl"]{
+
+    position:fixed !important;
+
+    top:14px !important;
+
+    left:10px !important;
+
+    z-index:99999 !important;
+
+}
+
+/* ===========================
+   Desktop Toggle 
+=========================== */
+
+@media (min-width:769px){
+
+header[data-testid="stHeader"]{
+
+    position:relative !important;
+
+}
+
+button[data-testid="stExpandSidebarButton"],
+button[data-testid="stCollapseSidebarButton"]{
+
+    position:absolute !important;
+
+    left:16px !important;
+    top:14px !important;
+
+    right:auto !important;
+    bottom:auto !important;
+
+    z-index:999999 !important;
+
+}
+
+}
+
+/* ==========================
+   Mobile
+========================== */
+
+@media (max-width:768px){
+
+button[data-testid="stExpandSidebarButton"],
+button[data-testid="stCollapseSidebarButton"]{
+
+    position:unset !important;
+
+    top:auto !important;
+    right:auto !important;
+    left:auto !important;
+
+    width:auto !important;
+    height:auto !important;
+
+}
+
+}
+
+.stButton>button,
+.stLinkButton>a{
+
+    width:100% !important;
+
+    min-height:48px !important;
+
+    border-radius:12px !important;
+
+}
+
+/* Movie Card Buttons */
+
+.stButton>button{
+
+    width:100% !important;
+    min-height:48px !important;
+    border-radius:12px !important;
+    font-weight:600 !important;
+}
+
+.stLinkButton>a{
+
+    display:flex !important;
+    justify-content:center !important;
+    align-items:center !important;
+
+    width:100% !important;
+
+    min-height:48px !important;
+
+    border-radius:12px !important;
+
+}
+
+/* Trailer + Wishlist same alignment */
+
+.stLinkButton,
+.stButton{
+    height:100%;
+}
+
+.stLinkButton > a,
+.stButton > button{
+
+    width:100% !important;
+
+    height:52px !important;
+    min-height:52px !important;
+
+    display:flex !important;
+
+    align-items:center !important;
+    justify-content:center !important;
+
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+}
+
+/* =========================
+   Wishlist
+========================= */
+
+[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlockBorderWrapper"]{
+
+    border-radius:16px !important;
+
+}
+
+.stButton>button{
+
+    border-radius:12px !important;
+
+    min-height:48px !important;
+
+    font-weight:600 !important;
+
+}
+
+.stButton>button:hover{
+
+    transform:translateY(-2px);
+
+    transition:.25s;
+
+}
+
+/*==============================
+ HERO HEADER
+==============================*/
+
+.hero-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-top:-35px;
+
+margin-bottom:10px;
+
+}
+
+#moodflix-title{
+
+margin:0;
+
+font-size:60px;
+
+font-weight:700;
+
+color:white;
+
+}
+
+#moodflix-title span{
+
+color:#A855F7;
+
+}
+
+.hero-tagline{
+
+margin-top:8px;
+
+font-size:18px;
+
+font-weight:600;
+
+color:#C4B5FD;
+
+}
+
+.hero-desc{
+
+margin-top:10px;
+
+font-size:15px;
+
+line-height:1.7;
+
+color:#9CA3AF;
+
+max-width:560px;
+
+}
+
+.hero-badge{
+
+padding:14px 24px;
+
+border-radius:15px;
+
+background:linear-gradient(135deg,#7C3AED,#D946EF);
+
+color:white;
+
+font-weight:700;
+
+box-shadow:0 8px 25px rgba(168,85,247,.35);
+
+}
+
+@media(max-width:900px){
+
+.hero-header{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:18px;
+
+}
+
+#moodflix-title{
+
+font-size:42px;
+
+}
+
+.hero-tagline{
+
+font-size:16px;
+
+}
+
+.hero-badge{
+
+display:none;
+
+}
+
+}
+
+/* Remove top whitespace */
+
+[data-testid="stVerticalBlock"] > div:first-child{
+
+margin-top:0 !important;
+padding-top:0 !important;
+
+}
+
+.stMarkdown{
+
+margin-top:0 !important;
+
+}
+
+h1{
+
+margin-top:0 !important;
+
+}

@@ -8,7 +8,7 @@ def sidebar():
         # LOGO
         # -----------------------------
         st.markdown("""
-            <div style="text-align:center;padding-top:10px;">
+            <div style="text-align:center;padding-top:0px;">
 
             <div style="
             width:75px;
@@ -26,7 +26,7 @@ def sidebar():
             </div>
 
             <p style="
-            margin-top:15px;
+            margin-top:6px;
             font-size:13px;
             color:#B7BDD3;
             ">
@@ -48,7 +48,8 @@ def sidebar():
             border-radius:18px;
             border:1px solid #2A3048;
             text-align:center;
-            margin-bottom:20px;
+            margin-top:-8px;
+            margin-bottom:10px;
         ">
 
         <h3 style="margin-bottom:8px;">
